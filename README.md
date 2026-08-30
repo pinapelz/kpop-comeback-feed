@@ -1,4 +1,6 @@
 # kpop-comeback-feed
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/pinapelz/kpop-comeback-feed)
+
 A Cloudflare Worker app that scrapes https://kpopofficial.com/kpop-comebacks/ into JSON and RSS format.
 
 ## Routes
