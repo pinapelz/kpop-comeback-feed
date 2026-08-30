@@ -4,7 +4,7 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "kpop-comeback-rss",
+	"name": "kpop-comeback-feed",
 	"main": "src/index.ts",
 	"compatibility_date": "2026-08-25",
 	"observability": {

@@ -1,18 +1,42 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `npm run dev` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npm run deploy` to publish your worker
- *
- * Bind resources to your worker in `wrangler.jsonc`. After adding bindings, a type definition for the
- * `Env` object can be regenerated with `npm run cf-typegen`.
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
+import { Hono } from 'hono';
+import { scrapeComeback } from './scraper';
+import { comebacksToRss } from './rss';
 
-export default {
-	async fetch(request, env, ctx): Promise<Response> {
-		return new Response("Hello World!");
-	},
-} satisfies ExportedHandler<Env>;
+const app = new Hono();
+
+app.get('/rss', async (c) => {
+	const comebacks = await scrapeComeback();
+	return c.text(comebacksToRss(comebacks));
+});
+
+app.get('/api/comebacks', async (c) => {
+	const comebacks = await scrapeComeback();
+	return c.json(comebacks);
+});
+
+app.get('/api/today', async (c) => {
+	const comebacks = await scrapeComeback();
+	const today = new Date();
+	today.setHours(0, 0, 0, 0);
+	const tomorrow = new Date(today);
+	tomorrow.setDate(today.getDate() + 1);
+
+	const todayComebacks = comebacks.filter((c) => {
+		if (c.unixDate === null) return false;
+		const comebackDate = new Date(c.unixDate * 1000);
+
+		return comebackDate >= today && comebackDate < tomorrow;
+	});
+	return c.json(todayComebacks);
+});
+
+app.notFound((c) => {
+	return c.json(
+		{
+			error: 'Not Found',
+		},
+		404,
+	);
+});
+
+export default app;

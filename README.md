@@ -1,0 +1,9 @@
+# kpop-comeback-feed
+A Cloudflare Worker app that scrapes https://kpopofficial.com/kpop-comebacks/ into JSON and RSS format.
+
+## Routes
+- `/rss`: RSS feed of all comebacks
+- `/api/comebacks`: Same information as RSS feed, but as a JSON instead
+- `/api/today`: Returns only comebacks that occur TODAY
+
+By default all scraped results are cached for 2 hours, crawling happens only when endpoints are invoked.
