@@ -15,6 +15,7 @@ app.get('/api/comebacks', async (c) => {
 });
 
 app.get('/api/today', async (c) => {
+	const format = c.req.query('format') ?? 'json';
 	const comebacks = await scrapeComeback();
 	const today = new Date();
 	today.setHours(0, 0, 0, 0);
@@ -27,7 +28,15 @@ app.get('/api/today', async (c) => {
 
 		return comebackDate >= today && comebackDate < tomorrow;
 	});
-	return c.json(todayComebacks);
+	if(format === "json")
+		return c.json(todayComebacks);
+	else{
+		let result = '';
+		for (const comeback of todayComebacks) {
+			result += `${comeback.artist} - ${comeback.dateTime}\n`;
+		}
+		return c.text(result);
+	}
 });
 
 app.notFound((c) => {
