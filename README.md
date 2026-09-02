@@ -5,6 +5,7 @@ A Cloudflare Worker app that scrapes https://kpopofficial.com/kpop-comebacks/ in
 
 ## Routes
 - `/rss`: RSS feed of all comebacks
+	- `allowFuture=true|false`: false by default, when true only include comebacks that have already passed (no future dates allowed)
 - `/api/comebacks`: Same information as RSS feed, but as a JSON instead
 - `/api/today`: Returns only comebacks that occur TODAY
 	- `format=json|plaintext`: By default returns in JSON form, plaintext mode reduces to only group and formatted date info

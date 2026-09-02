@@ -5,7 +5,19 @@ import { comebacksToRss } from './rss';
 const app = new Hono();
 
 app.get('/rss', async (c) => {
-	const comebacks = await scrapeComeback();
+	const allowFutureDates = c.req.query('allowFuture') === 'true';
+	const today = new Date();
+	today.setHours(0, 0, 0, 0);
+	let comebacks = await scrapeComeback();
+	if (!allowFutureDates) { // only past comebacks allowed
+		comebacks = comebacks.filter((c) => c.unixDate !== null);
+		const pastComebacks = comebacks.filter((c) => {
+			if (c.unixDate === null) return false;
+			const comebackDate = new Date(c.unixDate * 1000);
+			return comebackDate < today;
+		});
+		comebacks = pastComebacks;
+	}
 	return c.text(comebacksToRss(comebacks));
 });
 
