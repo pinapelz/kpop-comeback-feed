@@ -116,7 +116,12 @@ export async function scrapeComeback(): Promise<Comeback[]> {
 			};
 		})
 		.get()
-		.filter((item) => item.artist && item.dateTime);
+		.filter((item) => item.artist && item.dateTime)
+		.sort((a, b) => {
+			const diff = a.unixDate! - b.unixDate!
+			if (diff !== 0) return diff;
+			return a.artist!.localeCompare(b.artist!);
+		});
 
 	try {
 		const responseToCache = new Response(JSON.stringify(comebacks), {
